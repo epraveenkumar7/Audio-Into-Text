@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Speech to Text (Hugging Face)</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #121212;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+    .container {
+      background: rgba(255,255,255,0.1);
+      padding: 20px 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.2);
+      width: 450px;
+      text-align: center;
+    }
+    input[type="file"], button {
+      margin-top: 10px;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+    }
+    button {
+      background: linear-gradient(45deg, #ff007a, #ff9900);
+      color: #fff;
+      cursor: pointer;
+    }
+    .output {
+      margin-top: 20px;
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 8px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🎙️ Upload Audio to Convert Text</h2>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="file" name="audio" accept="audio/*" required>
+      <button type="submit">Convert</button>
+    </form>
+
+    {% if text %}
+    <div class="output">
+      <h3>📝 Transcribed Text</h3>
+      <p id="textDisplay"></p>
+    </div>
+    <script>
+      const text = `{{ text }}`;
+      const textElement = document.getElementById('textDisplay');
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          textElement.textContent += text[i];
+          i++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 40);
+    </script>
+    {% endif %}
+  </div>
+</body>
+</html>
